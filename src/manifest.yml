@@ -27,12 +27,14 @@ options_ui:
 
 content_scripts:
   - js:
-      - src/content.ts
-      # - injected.js
+      - src/content/index.ts
     matches:
       - <all_urls>
     run_at: document_start
     all_frames: true
+
+background:
+  scripts: ["src/background/index.ts"]
 
 permissions:
   - tabs

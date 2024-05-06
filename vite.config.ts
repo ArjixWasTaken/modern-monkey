@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 
 // Vite plugins
 import vue from "@vitejs/plugin-vue";
-import webExtension from "vite-plugin-web-extension";
+import webExt from "vite-plugin-web-extension";
 
 // Utilities
 import { readJsonFile as json } from "vite-plugin-web-extension";
@@ -25,10 +25,9 @@ const generateManifest = () => {
 export default defineConfig({
   plugins: [
     vue(),
-    webExtension({
+    webExt({
       manifest: generateManifest,
       watchFilePaths: ["package.json", "src/manifest.yml"],
-      additionalInputs: ["src/content.ts"],
       browser: "firefox"
     }),
   ],
