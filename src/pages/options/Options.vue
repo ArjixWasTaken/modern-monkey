@@ -4,34 +4,13 @@ console.log("Hello from the popup!");
 
 <template>
   <div>
+    <h1>Options!</h1>
   </div>
 </template>
 
 <style>
-html,
-body {
-  width: 300px;
-  height: 400px;
-  padding: 0;
-  margin: 0;
-}
-
 body {
   background-color: rgb(36, 36, 36);
-}
-
-body > div {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-  justify-content: center;
-}
-
-img {
-  width: 200px;
-  height: 200px;
 }
 
 h1 {

@@ -4,6 +4,7 @@ console.log("Hello from the popup!");
 
 <template>
   <div>
+    <h1>Hi there!</h1>
   </div>
 </template>
 
