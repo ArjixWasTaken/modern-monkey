@@ -1,0 +1,1688 @@
+{
+  "title": "JSON schema",
+  "taken_from": "https://raw.githubusercontent.com/PrsPrsBK/ffext-manifest-schema/master/ffext.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "manifest_version",
+    "name"
+  ],
+  "definitions": {
+    "ThemeIcons": {
+      "type": "object",
+      "properties": {
+        "light": {
+          "$ref": "#/definitions/ExtensionURL",
+          "description": "A light icon to use for dark themes"
+        },
+        "dark": {
+          "$ref": "#/definitions/ExtensionURL",
+          "description": "The dark icon to use for light themes"
+        },
+        "size": {
+          "type": "number",
+          "description": "The size of the icons"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      }
+    },
+    "OptionalPermissionNoPrompt": {
+      "type": "string",
+      "enum": [
+        "idle"
+      ]
+    },
+    "OptionalPermission": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/OptionalPermissionNoPrompt"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "clipboardRead",
+            "clipboardWrite",
+            "geolocation",
+            "notifications",
+            "browserSettings",
+            "cookies",
+            "downloads",
+            "downloads.open",
+            "management",
+            "privacy",
+            "proxy",
+            "nativeMessaging",
+            "webNavigation",
+            "webRequest",
+            "webRequestBlocking",
+            "bookmarks",
+            "browsingData",
+            "devtools",
+            "find",
+            "history",
+            "menus.overrideContext",
+            "pkcs11",
+            "search",
+            "sessions",
+            "activeTab",
+            "tabs",
+            "tabHide",
+            "topSites"
+          ]
+        }
+      ]
+    },
+    "OptionalPermissionOrOrigin": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/OptionalPermission"
+        },
+        {
+          "$ref": "#/definitions/MatchPattern"
+        }
+      ]
+    },
+    "PermissionNoPrompt": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/OptionalPermission"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "alarms",
+            "mozillaAddons",
+            "storage",
+            "unlimitedStorage"
+          ]
+        }
+      ]
+    },
+    "Permission": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/PermissionNoPrompt"
+        },
+        {
+          "$ref": "#/definitions/OptionalPermission"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "alarms",
+            "browserSettings",
+            "clipboardWrite",
+            "contextualIdentities",
+            "cookies",
+            "dns",
+            "downloads",
+            "activityLog",
+            "idle",
+            "networkStatus",
+            "notifications",
+            "optional_permissions",
+            "privacy",
+            "proxy",
+            "storage",
+            "telemetry",
+            "theme",
+            "user_scripts",
+            "webNavigation",
+            "webRequest",
+            "bookmarks",
+            "action",
+            "browser_action",
+            "browsingData",
+            "captivePortal",
+            "commands",
+            "devtools_page",
+            "find",
+            "history",
+            "identity",
+            "menus",
+            "contextMenus",
+            "normandyAddonStudy",
+            "omnibox",
+            "page_action",
+            "pkcs11",
+            "geckoProfiler",
+            "search",
+            "sessions",
+            "sidebar_action",
+            "topSites",
+            "urlbar"
+          ]
+        }
+      ]
+    },
+    "PermissionOrOrigin": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/Permission"
+        },
+        {
+          "$ref": "#/definitions/MatchPattern"
+        }
+      ]
+    },
+    "HttpURL": {
+      "type": "string",
+      "format": "url",
+      "pattern": "^https?://.*$"
+    },
+    "ExtensionURL": {
+      "type": "string",
+      "format": "strictRelativeUrl"
+    },
+    "ExtensionFileUrl": {
+      "type": "string",
+      "format": "strictRelativeUrl",
+      "pattern": "\\S",
+      "description": "preprocess: localize"
+    },
+    "ImageDataOrExtensionURL": {
+      "type": "string",
+      "format": "imageDataOrStrictRelativeUrl"
+    },
+    "ExtensionID": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\{[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\}$"
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9-._]*@[a-zA-Z0-9-._]+$"
+        }
+      ]
+    },
+    "FirefoxSpecificProperties": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/ExtensionID"
+        },
+        "update_url": {
+          "type": "string",
+          "format": "url"
+        },
+        "strict_min_version": {
+          "type": "string"
+        },
+        "strict_max_version": {
+          "type": "string"
+        }
+      }
+    },
+    "MatchPattern": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "<all_urls>"
+          ]
+        },
+        {
+          "$ref": "#/definitions/MatchPatternRestricted"
+        },
+        {
+          "$ref": "#/definitions/MatchPatternUnestricted"
+        }
+      ]
+    },
+    "MatchPatternRestricted": {
+      "description": "Same as MatchPattern above, but excludes <all_urls>",
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^(https?|wss?|file|ftp|\\*)://(\\*|\\*\\.[^*/]+|[^*/]+)/.*$"
+        },
+        {
+          "type": "string",
+          "pattern": "^file:///.*$"
+        }
+      ]
+    },
+    "MatchPatternUnestricted": {
+      "description": "Mostly unrestricted match patterns for privileged add-ons. This should technically be rejected for unprivileged add-ons, but, reasons. The MatchPattern class will still refuse privileged schemes for those extensions.",
+      "type": "string",
+      "pattern": "^resource://(\\*|\\*\\.[^*/]+|[^*/]+)/.*$|^about:"
+    },
+    "ContentScript": {
+      "type": "object",
+      "description": "Details of the script or CSS to inject. Either the code or the file property must be set, but both may not be set at the same time. Based on InjectDetails, but using underscore rather than camel case naming conventions.",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "matches": {
+          "type": "array",
+          "optional": false,
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/MatchPattern"
+          }
+        },
+        "exclude_matches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/MatchPattern"
+          }
+        },
+        "include_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclude_globs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "css": {
+          "type": "array",
+          "description": "The list of CSS files to inject",
+          "items": {
+            "$ref": "#/definitions/ExtensionURL"
+          }
+        },
+        "js": {
+          "type": "array",
+          "description": "The list of JS files to inject",
+          "items": {
+            "$ref": "#/definitions/ExtensionURL"
+          }
+        },
+        "all_frames": {
+          "type": "boolean",
+          "description": "If allFrames is <code>true</code>, implies that the JavaScript or CSS should be injected into all frames of current page. By default, it's <code>false</code> and is only injected into the top frame."
+        },
+        "match_about_blank": {
+          "type": "boolean",
+          "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+        },
+        "run_at": {
+          "$ref": "#/definitions/RunAt",
+          "default": "document_idle",
+          "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+        }
+      }
+    },
+    "IconPath": {
+      "oneOf": [
+        {
+          "type": "object",
+          "patternProperties": {
+            "^[1-9]\\d*$": {
+              "$ref": "#/definitions/ExtensionFileUrl"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/definitions/ExtensionFileUrl"
+        }
+      ]
+    },
+    "IconImageData": {
+      "oneOf": [
+        {
+          "type": "object",
+          "patternProperties": {
+            "^[1-9]\\d*$": {
+              "$ref": "#/definitions/ImageData"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/definitions/ImageData"
+        }
+      ]
+    },
+    "ImageData": {
+      "type": "object",
+      "isInstanceOf": "ImageData",
+      "postprocess": "convertImageDataToURL"
+    },
+    "UnrecognizedProperty": {
+      "type": [
+        "string",
+        "number",
+        "object",
+        "array",
+        "boolean",
+        "null"
+      ],
+      "description": "*deprecated!* An unexpected property was found in the WebExtension manifest."
+    },
+    "PersistentBackgroundProperty": {
+      "oneOf": [
+        {
+          "type": "boolean",
+          "enum": [
+            true
+          ]
+        },
+        {
+          "type": "boolean",
+          "enum": [
+            false
+          ],
+          "description": "*deprecated!* Event pages are not currently supported. This will run as a persistent background page."
+        }
+      ]
+    },
+    "ImageFormat": {
+      "type": "string",
+      "enum": [
+        "jpeg",
+        "png"
+      ],
+      "description": "The format of an image."
+    },
+    "ImageDetails": {
+      "type": "object",
+      "description": "Details about the format, quality, area and scale of the capture.",
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/ImageFormat",
+          "description": "The format of the resulting image.  Default is <code>\"jpeg\"</code>."
+        },
+        "quality": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "When format is <code>\"jpeg\"</code>, controls the quality of the resulting image.  This value is ignored for PNG images.  As quality is decreased, the resulting image will have more visual artifacts, and the number of bytes needed to store it will decrease."
+        },
+        "rect": {
+          "type": "object",
+          "description": "The area of the document to capture, in CSS pixels, relative to the page.  If omitted, capture the visible viewport.",
+          "properties": {
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "width": {
+              "type": "number"
+            },
+            "height": {
+              "type": "number"
+            }
+          }
+        },
+        "scale": {
+          "type": "number",
+          "description": "The scale of the resulting image.  Defaults to <code>devicePixelRatio</code>."
+        },
+        "resetScrollPosition": {
+          "type": "boolean",
+          "description": "If true, temporarily resets the scroll position of the document to 0. Only takes effect if rect is also specified."
+        }
+      }
+    },
+    "RunAt": {
+      "type": "string",
+      "enum": [
+        "document_start",
+        "document_end",
+        "document_idle"
+      ],
+      "description": "The soonest that the JavaScript or CSS will be injected into the tab."
+    },
+    "CSSOrigin": {
+      "type": "string",
+      "enum": [
+        "user",
+        "author"
+      ],
+      "description": "The origin of the CSS to inject, this affects the cascading order (priority) of the stylesheet."
+    },
+    "InjectDetails": {
+      "type": "object",
+      "description": "Details of the script or CSS to inject. Either the code or the file property must be set, but both may not be set at the same time.",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "JavaScript or CSS code to inject.<br><br><b>Warning:</b><br>Be careful using the <code>code</code> parameter. Incorrect use of it may open your extension to <a href=\"https://en.wikipedia.org/wiki/Cross-site_scripting\">cross site scripting</a> attacks."
+        },
+        "file": {
+          "type": "string",
+          "description": "JavaScript or CSS file to inject."
+        },
+        "allFrames": {
+          "type": "boolean",
+          "description": "If allFrames is <code>true</code>, implies that the JavaScript or CSS should be injected into all frames of current page. By default, it's <code>false</code> and is only injected into the top frame."
+        },
+        "matchAboutBlank": {
+          "type": "boolean",
+          "description": "If matchAboutBlank is true, then the code is also injected in about:blank and about:srcdoc frames if your extension has access to its parent document. Code cannot be inserted in top-level about:-frames. By default it is <code>false</code>."
+        },
+        "frameId": {
+          "type": "number",
+          "minimum": 0,
+          "description": "The ID of the frame to inject the script into. This may not be used in combination with <code>allFrames</code>."
+        },
+        "runAt": {
+          "$ref": "#/definitions/RunAt",
+          "default": "document_idle",
+          "description": "The soonest that the JavaScript or CSS will be injected into the tab. Defaults to \"document_idle\"."
+        },
+        "cssOrigin": {
+          "$ref": "#/definitions/CSSOrigin",
+          "description": "The css origin of the stylesheet to inject. Defaults to \"author\"."
+        }
+      }
+    },
+    "Date": {
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "number",
+          "minimum": 0
+        },
+        {
+          "type": "object",
+          "isInstanceOf": "Date",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "object",
+              "array",
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      ]
+    },
+    "ExtensionFileOrCode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "file": {
+              "$ref": "#/definitions/ExtensionURL"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "PlainJSONValue": {
+      "description": "A plain JSON value",
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PlainJSONValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/PlainJSONValue"
+          }
+        }
+      ]
+    },
+    "ProtocolHandler": {
+      "type": "object",
+      "description": "Represents a protocol handler definition.",
+      "properties": {
+        "name": {
+          "description": "A user-readable title string for the protocol handler. This will be displayed to the user in interface objects as needed.",
+          "type": "string"
+        },
+        "protocol": {
+          "description": "The protocol the site wishes to handle, specified as a string. For example, you can register to handle SMS text message links by registering to handle the \"sms\" scheme.",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "bitcoin",
+                "dat",
+                "dweb",
+                "ftp",
+                "geo",
+                "gopher",
+                "im",
+                "ipfs",
+                "ipns",
+                "irc",
+                "ircs",
+                "magnet",
+                "mailto",
+                "matrix",
+                "mms",
+                "news",
+                "nntp",
+                "sip",
+                "sms",
+                "smsto",
+                "ssb",
+                "ssh",
+                "tel",
+                "urn",
+                "webcal",
+                "wtai",
+                "xmpp"
+              ]
+            },
+            {
+              "type": "string",
+              "pattern": "^(ext|web)\\+[a-z0-9.+-]+$"
+            }
+          ]
+        },
+        "uriTemplate": {
+          "description": "The URL of the handler, as a string. This string should include \"%s\" as a placeholder which will be replaced with the escaped URL of the document to be handled. This URL might be a true URL, or it could be a phone number, email address, or so forth.\npreprocess: localize",
+          "oneOf": [
+            {
+              "$ref": "#/definitions/ExtensionURL"
+            },
+            {
+              "$ref": "#/definitions/HttpURL"
+            }
+          ]
+        }
+      }
+    },
+    "ThemeColor": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 255
+          }
+        },
+        {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "number"
+          }
+        }
+      ]
+    },
+    "ThemeExperiment": {
+      "type": "object",
+      "properties": {
+        "stylesheet": {
+          "$ref": "#/definitions/ExtensionURL"
+        },
+        "images": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ThemeType": {
+      "type": "object",
+      "properties": {
+        "images": {
+          "type": "object",
+          "properties": {
+            "additional_backgrounds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ImageDataOrExtensionURL"
+              },
+              "maxItems": 15
+            },
+            "headerURL": {
+              "$ref": "#/definitions/ImageDataOrExtensionURL",
+              "description": "*deprecated!* Unsupported images property, use 'theme.images.theme_frame', this alias is ignored in Firefox >= 70."
+            },
+            "theme_frame": {
+              "$ref": "#/definitions/ImageDataOrExtensionURL"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/ImageDataOrExtensionURL"
+          }
+        },
+        "colors": {
+          "type": "object",
+          "properties": {
+            "tab_selected": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "accentcolor": {
+              "$ref": "#/definitions/ThemeColor",
+              "description": "*deprecated!* Unsupported colors property, use 'theme.colors.frame', this alias is ignored in Firefox >= 70."
+            },
+            "frame": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "frame_inactive": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "textcolor": {
+              "$ref": "#/definitions/ThemeColor",
+              "description": "*deprecated!* Unsupported color property, use 'theme.colors.tab_background_text', this alias is ignored in Firefox >= 70."
+            },
+            "tab_background_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "tab_background_separator": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "tab_loading": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "tab_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "tab_line": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_text": {
+              "$ref": "#/definitions/ThemeColor",
+              "description": "This color property is an alias of 'bookmark_text'."
+            },
+            "bookmark_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_border": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_separator": {
+              "$ref": "#/definitions/ThemeColor",
+              "description": "*deprecated!* This color property is ignored in Firefox >= 89."
+            },
+            "toolbar_top_separator": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_bottom_separator": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_vertical_separator": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "icons": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "icons_attention": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "button_background_hover": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "button_background_active": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "popup": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "popup_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "popup_border": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_focus": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_text_focus": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_border_focus": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "popup_highlight": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "popup_highlight_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "ntp_background": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "ntp_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "sidebar": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "sidebar_border": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "sidebar_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "sidebar_highlight": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "sidebar_highlight_text": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_highlight": {
+              "$ref": "#/definitions/ThemeColor"
+            },
+            "toolbar_field_highlight_text": {
+              "$ref": "#/definitions/ThemeColor"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/ThemeColor"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "additional_backgrounds_alignment": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "bottom",
+                  "center",
+                  "left",
+                  "right",
+                  "top",
+                  "center bottom",
+                  "center center",
+                  "center top",
+                  "left bottom",
+                  "left center",
+                  "left top",
+                  "right bottom",
+                  "right center",
+                  "right top"
+                ]
+              },
+              "maxItems": 15
+            },
+            "additional_backgrounds_tiling": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "no-repeat",
+                  "repeat",
+                  "repeat-x",
+                  "repeat-y"
+                ]
+              },
+              "maxItems": 15
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      }
+    },
+    "ActionManifest": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "default_title": {
+          "type": "string",
+          "description": "preprocess: localize"
+        },
+        "default_icon": {
+          "$ref": "#/definitions/IconPath"
+        },
+        "theme_icons": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/ThemeIcons"
+          },
+          "description": "Specifies icons to use for dark and light themes"
+        },
+        "default_popup": {
+          "type": "string",
+          "format": "relativeUrl",
+          "description": "preprocess: localize"
+        },
+        "browser_style": {
+          "type": "boolean",
+          "default": false
+        },
+        "default_area": {
+          "description": "Defines the location the browserAction will appear by default.  The default location is navbar.",
+          "type": "string",
+          "enum": [
+            "navbar",
+            "menupanel",
+            "tabstrip",
+            "personaltoolbar"
+          ]
+        }
+      }
+    },
+    "KeyName": {
+      "type": "string",
+      "format": "manifestShortcutKey"
+    }
+  },
+  "properties": {
+    "manifest_version": {
+      "type": "number",
+      "minimum": 2,
+      "maximum": 3,
+      "postprocess": "manifestVersionCheck"
+    },
+    "applications": {
+      "type": "object",
+      "properties": {
+        "gecko": {
+          "$ref": "#/definitions/FirefoxSpecificProperties"
+        }
+      }
+    },
+    "browser_specific_settings": {
+      "type": "object",
+      "properties": {
+        "gecko": {
+          "$ref": "#/definitions/FirefoxSpecificProperties"
+        },
+        "edge": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "number",
+              "object",
+              "array",
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      }
+    },
+    "name": {
+      "type": "string",
+      "optional": false,
+      "description": "preprocess: localize"
+    },
+    "short_name": {
+      "type": "string",
+      "description": "preprocess: localize"
+    },
+    "description": {
+      "type": "string",
+      "description": "preprocess: localize"
+    },
+    "author": {
+      "type": "string",
+      "description": "preprocess: localize\nonError: warn"
+    },
+    "version": {
+      "type": "string",
+      "optional": false
+    },
+    "homepage_url": {
+      "type": "string",
+      "format": "url",
+      "description": "preprocess: localize"
+    },
+    "minimum_chrome_version": {
+      "type": "string"
+    },
+    "minimum_opera_version": {
+      "type": "string"
+    },
+    "icons": {
+      "type": "object",
+      "patternProperties": {
+        "^[1-9]\\d*$": {
+          "$ref": "#/definitions/ExtensionFileUrl"
+        }
+      }
+    },
+    "incognito": {
+      "type": "string",
+      "enum": [
+        "not_allowed",
+        "spanning"
+      ],
+      "default": "spanning"
+    },
+    "background": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "page": {
+              "$ref": "#/definitions/ExtensionURL"
+            },
+            "persistent": {
+              "$ref": "#/definitions/PersistentBackgroundProperty"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/UnrecognizedProperty"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "scripts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ExtensionURL"
+              }
+            },
+            "persistent": {
+              "$ref": "#/definitions/PersistentBackgroundProperty"
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/UnrecognizedProperty"
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "service_worker": {
+              "$ref": "#/definitions/ExtensionURL"
+            }
+          },
+          "postprocess": "requireBackgroundServiceWorkerEnabled"
+        }
+      ]
+    },
+    "options_ui": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "$ref": "#/definitions/ExtensionURL"
+        },
+        "browser_style": {
+          "type": "boolean",
+          "default": true
+        },
+        "chrome_style": {
+          "type": "boolean"
+        },
+        "open_in_tab": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "object",
+          "array",
+          "boolean",
+          "null"
+        ],
+        "description": "*deprecated!* An unexpected property was found in the WebExtension manifest"
+      }
+    },
+    "content_scripts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ContentScript"
+      }
+    },
+    "content_security_policy": {
+      "oneOf": [
+        {
+          "max_manifest_version": 2,
+          "type": "string",
+          "format": "contentSecurityPolicy"
+        },
+        {
+          "min_manifest_version": 3,
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/UnrecognizedProperty"
+          },
+          "properties": {
+            "extension_pages": {
+              "type": "string",
+              "format": "contentSecurityPolicy",
+              "description": "The Content Security Policy used for extension pages."
+            }
+          }
+        }
+      ],
+      "description": "onError: warn"
+    },
+    "permissions": {
+      "default": [],
+      "oneOf": [
+        {
+          "max_manifest_version": 2,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionOrOrigin",
+            "description": "onError: warn"
+          }
+        },
+        {
+          "min_manifest_version": 3,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Permission",
+            "description": "onError: warn"
+          }
+        }
+      ]
+    },
+    "host_permissions": {
+      "min_manifest_version": 3,
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/MatchPattern",
+        "description": "onError: warn"
+      },
+      "default": []
+    },
+    "optional_permissions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/OptionalPermissionOrOrigin",
+        "description": "onError: warn"
+      },
+      "default": []
+    },
+    "web_accessible_resources": {
+      "oneOf": [
+        {
+          "max_manifest_version": 2,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "min_manifest_version": 3,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resources": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "matches": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/MatchPatternRestricted"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "developer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "preprocess: localize"
+        },
+        "url": {
+          "type": "string",
+          "description": "preprocess: localize"
+        }
+      }
+    },
+    "hidden": {
+      "type": "boolean",
+      "default": false
+    },
+    "additionalProperties": {
+      "$ref": "#/definitions/UnrecognizedProperty"
+    },
+    "langpack_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z-]+$"
+    },
+    "languages": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}[a-zA-Z-]*$": {
+          "type": "object",
+          "properties": {
+            "chrome_resources": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-zA-Z-.]+$": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/definitions/ExtensionURL"
+                    },
+                    {
+                      "type": "object",
+                      "patternProperties": {
+                        "^[a-z]+$": {
+                          "$ref": "#/definitions/ExtensionURL"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]+$": {
+          "type": "object",
+          "properties": {
+            "base_path": {
+              "$ref": "#/definitions/ExtensionURL"
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "strictRelativeUrl"
+              }
+            }
+          }
+        }
+      }
+    },
+    "dictionaries": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z]{2}[a-zA-Z-]*$": {
+          "type": "string",
+          "format": "strictRelativeUrl",
+          "pattern": "\\.dic$"
+        }
+      }
+    },
+    "theme": {
+      "$ref": "#/definitions/ThemeType"
+    },
+    "dark_theme": {
+      "$ref": "#/definitions/ThemeType"
+    },
+    "default_locale": {
+      "type": "string"
+    },
+    "theme_experiment": {
+      "$ref": "#/definitions/ThemeExperiment"
+    },
+    "l10n_resources": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "protocol_handlers": {
+      "description": "A list of protocol handler definitions.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ProtocolHandler"
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "ping_type": {
+          "type": "string"
+        },
+        "schemaNamespace": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "key": {
+              "type": "object",
+              "properties": {
+                "crv": {
+                  "type": "string",
+                  "optional": "false"
+                },
+                "kty": {
+                  "type": "string",
+                  "optional": "false"
+                },
+                "x": {
+                  "type": "string",
+                  "optional": "false"
+                },
+                "y": {
+                  "type": "string",
+                  "optional": "false"
+                }
+              }
+            }
+          }
+        },
+        "study_name": {
+          "type": "string"
+        },
+        "pioneer_id": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "user_scripts": {
+      "type": "object",
+      "properties": {
+        "api_script": {
+          "$ref": "#/definitions/ExtensionURL"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      }
+    },
+    "action": {
+      "min_manifest_version": 3,
+      "$ref": "#/definitions/ActionManifest"
+    },
+    "browser_action": {
+      "max_manifest_version": 2,
+      "$ref": "#/definitions/ActionManifest"
+    },
+    "chrome_settings_overrides": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "homepage": {
+          "type": "string",
+          "format": "homepageUrl",
+          "description": "preprocess: localize"
+        },
+        "search_provider": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/UnrecognizedProperty"
+          },
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "preprocess: localize"
+            },
+            "keyword": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "preprocess: localize"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "preprocess: localize"
+                  },
+                  "minItems": 1
+                }
+              ]
+            },
+            "search_url": {
+              "type": "string",
+              "format": "url",
+              "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
+              "description": "preprocess: localize"
+            },
+            "favicon_url": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "relativeUrl",
+                  "max_manifest_version": 2
+                },
+                {
+                  "type": "string",
+                  "format": "strictRelativeUrl"
+                }
+              ],
+              "description": "preprocess: localize"
+            },
+            "suggest_url": {
+              "type": "string",
+              "pattern": "^$|^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
+              "description": "preprocess: localize"
+            },
+            "instant_url": {
+              "type": "string",
+              "format": "url",
+              "description": "*deprecated!* Unsupported on Firefox at this time.\npreprocess: localize"
+            },
+            "image_url": {
+              "type": "string",
+              "format": "url",
+              "description": "*deprecated!* Unsupported on Firefox at this time.\npreprocess: localize"
+            },
+            "search_url_get_params": {
+              "type": "string",
+              "description": "GET parameters to the search_url as a query string.\npreprocess: localize"
+            },
+            "search_url_post_params": {
+              "type": "string",
+              "description": "POST parameters to the search_url as a query string.\npreprocess: localize"
+            },
+            "suggest_url_get_params": {
+              "type": "string",
+              "description": "GET parameters to the suggest_url as a query string.\npreprocess: localize"
+            },
+            "suggest_url_post_params": {
+              "type": "string",
+              "description": "POST parameters to the suggest_url as a query string.\npreprocess: localize"
+            },
+            "instant_url_post_params": {
+              "type": "string",
+              "description": "*deprecated!* Unsupported on Firefox at this time.\npreprocess: localize"
+            },
+            "image_url_post_params": {
+              "type": "string",
+              "description": "*deprecated!* Unsupported on Firefox at this time.\npreprocess: localize"
+            },
+            "search_form": {
+              "type": "string",
+              "format": "url",
+              "pattern": "^(https://|http://(localhost|127\\.0\\.0\\.1|\\[::1\\])(:\\d*)?(/|$)).*$",
+              "description": "preprocess: localize"
+            },
+            "alternate_urls": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "url",
+                "description": "preprocess: localize"
+              },
+              "description": "*deprecated!* Unsupported on Firefox at this time."
+            },
+            "prepopulated_id": {
+              "type": "number",
+              "description": "*deprecated!* Unsupported on Firefox."
+            },
+            "encoding": {
+              "type": "string",
+              "description": "Encoding of the search term."
+            },
+            "is_default": {
+              "type": "boolean",
+              "description": "Sets the default engine to a built-in engine only."
+            },
+            "params": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "A url parameter name"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "enum": [
+                      "purpose",
+                      "pref"
+                    ],
+                    "description": "The type of param can be either \"purpose\" or \"pref\"."
+                  },
+                  "pref": {
+                    "type": "string",
+                    "description": "The preference to retrieve the value from.\npreprocess: localize"
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "enum": [
+                      "contextmenu",
+                      "searchbar",
+                      "homepage",
+                      "keyword",
+                      "newtab"
+                    ],
+                    "description": "The context that initiates a search, required if condition is \"purpose\"."
+                  },
+                  "value": {
+                    "type": "string",
+                    "description": "A url parameter value.\npreprocess: localize"
+                  }
+                }
+              },
+              "description": "A list of optional search url parameters. This allows the additon of search url parameters based on how the search is performed in Firefox."
+            }
+          }
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/definitions/UnrecognizedProperty"
+        },
+        "properties": {
+          "suggested_key": {
+            "type": "object",
+            "properties": {
+              "default": {
+                "$ref": "#/definitions/KeyName"
+              },
+              "mac": {
+                "$ref": "#/definitions/KeyName"
+              },
+              "linux": {
+                "$ref": "#/definitions/KeyName"
+              },
+              "windows": {
+                "$ref": "#/definitions/KeyName"
+              },
+              "chromeos": {
+                "type": "string"
+              },
+              "android": {
+                "type": "string"
+              },
+              "ios": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string",
+                "description": "*deprecated!* Unknown platform name"
+              }
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "preprocess: localize"
+          }
+        }
+      }
+    },
+    "devtools_page": {
+      "$ref": "#/definitions/ExtensionURL"
+    },
+    "omnibox": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "keyword": {
+          "type": "string",
+          "pattern": "^[^?\\s:][^\\s:]*$"
+        }
+      }
+    },
+    "page_action": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "default_title": {
+          "type": "string",
+          "description": "preprocess: localize"
+        },
+        "default_icon": {
+          "$ref": "#/definitions/IconPath"
+        },
+        "default_popup": {
+          "type": "string",
+          "format": "relativeUrl",
+          "description": "preprocess: localize"
+        },
+        "browser_style": {
+          "type": "boolean",
+          "default": false
+        },
+        "show_matches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/MatchPattern"
+          }
+        },
+        "hide_matches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/MatchPatternRestricted"
+          }
+        },
+        "pinned": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "sidebar_action": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/UnrecognizedProperty"
+      },
+      "properties": {
+        "default_title": {
+          "type": "string",
+          "description": "preprocess: localize"
+        },
+        "default_icon": {
+          "$ref": "#/definitions/IconPath"
+        },
+        "browser_style": {
+          "type": "boolean",
+          "default": true
+        },
+        "default_panel": {
+          "type": "string",
+          "format": "strictRelativeUrl",
+          "description": "preprocess: localize"
+        },
+        "open_at_install": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether or not the sidebar is opened at install. Default is <code>true</code>."
+        }
+      }
+    },
+    "chrome_url_overrides": {
+      "type": "object",
+      "properties": {
+        "newtab": {
+          "$ref": "#/definitions/ExtensionURL",
+          "description": "preprocess: localize"
+        },
+        "bookmarks": {
+          "unsupported": true,
+          "$ref": "#/definitions/ExtensionURL",
+          "description": "preprocess: localize"
+        },
+        "history": {
+          "unsupported": true,
+          "$ref": "#/definitions/ExtensionURL",
+          "description": "preprocess: localize"
+        }
+      }
+    }
+  }
+}

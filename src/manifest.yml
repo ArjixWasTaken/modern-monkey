@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../ff-extension-schema.json
 ---
 manifest_version: 2
 
@@ -5,19 +6,19 @@ name: __MSG_extName__
 description: __MSG_extDescription__
 
 author: ArjixWasTaken
-homepage_url: 'https://github.com/ArjixWasTaken/monaco-monkey'
+homepage_url: "https://github.com/ArjixWasTaken/monaco-monkey"
 
 icons:
-  '16': public/icon/16.png
-  '48': public/icon/48.png
-  '128': public/icon/128.png
+  "16": public/icon/16.png
+  "48": public/icon/48.png
+  "128": public/icon/128.png
 
 default_locale: en
 browser_action:
   browser_style: true
   default_icon:
-    '16': public/icon/16.png
-    '32': public/icon/32.png
+    "16": public/icon/16.png
+    "32": public/icon/32.png
   default_title: __MSG_extName__
   default_popup: src/pages/popup/index.html
 
@@ -59,4 +60,4 @@ commands:
   SkipScripts:
     description: __MSG_skipScripts__
 
-minimum_chrome_version: '101.0'
+minimum_chrome_version: "101.0"
