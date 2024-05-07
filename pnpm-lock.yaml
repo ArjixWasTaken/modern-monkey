@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      ts-results:
+        specifier: ^3.3.0
+        version: 3.3.0
       vue:
         specifier: ^3.3
         version: 3.4.26(typescript@5.4.5)
@@ -1178,6 +1181,9 @@ packages:
   to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
+
+  ts-results@3.3.0:
+    resolution: {integrity: sha512-FWqxGX2NHp5oCyaMd96o2y2uMQmSu8Dey6kvyuFdRJ2AzfmWo3kWa4UsPlCGlfQ/qu03m09ZZtppMoY8EMHuiA==}
 
   type-fest@1.4.0:
     resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
@@ -2437,6 +2443,8 @@ snapshots:
       rimraf: 3.0.2
 
   to-fast-properties@2.0.0: {}
+
+  ts-results@3.3.0: {}
 
   type-fest@1.4.0: {}
 
