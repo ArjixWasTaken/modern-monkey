@@ -1,0 +1,4 @@
+{
+    // It still provides auto-complete
+    "yaml.validate": false
+}
